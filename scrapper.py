@@ -56,5 +56,5 @@ def find_flyby(satellite_id: str, latitude: str, longitude: str) -> dict:
             "flyby_duration": flyby_duration
         }
 
-    except WebDriverException as error:
-        logging.error("Webpage not reached")
+    except WebDriverException:
+        logging.error("Webpage not reached!")
