@@ -10,11 +10,11 @@ from subscriber import Subscriber
 class Notification:
     """Represents an email content, that will be sent to the Subsciber"""
 
-    def __init__(self, flyby_data: dict):
+    def __init__(self, flyby_data: dict) -> None:
         self.flyby_data = flyby_data
         self.notification = self.create()
 
-    def create(self):
+    def create(self) -> str:
         """
         Creates a notification that will be sent by email.
 
@@ -32,13 +32,14 @@ class Notification:
 
         return self.notification
 
-    def send_mail_to(self, subscriber: Subscriber):
+    def send_mail_to(self, subscriber: Subscriber) -> None:
         """
         Sends an email with the notification to the subsciber.
 
         Args:
             subscriber (Subscriber): the person who will receive the notification
         """
+
         load_dotenv()
         smtp_port = int(getenv("SMTP_PORT"))
         smtp_server = getenv("SMTP_SERVER")

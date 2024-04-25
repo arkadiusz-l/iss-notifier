@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 logging.basicConfig(level=logging.INFO)
 
 
-def find_flyby(satellite_id: str, latitude: str, longitude: str):
+def find_flyby(satellite_id: str, latitude: str, longitude: str) -> dict:
     """
     Scrapes flyby information from a webpage.
 
