@@ -10,8 +10,8 @@ from subscriber import Subscriber
 class Notification:
     """Represents an email content, that will be sent to the Subsciber"""
 
-    def __init__(self, scrapped_data: dict):
-        self.scrapping_data = scrapped_data
+    def __init__(self, flyby_data: dict):
+        self.flyby_data = flyby_data
         self.notification = self.create()
 
     def create(self):
@@ -21,15 +21,12 @@ class Notification:
         Returns:
             str: the content of the notification
         """
-        h, m, s = self.scrapping_data["time_to_flight"]
-        self.notification = f'Przelot ISS dnia {self.scrapping_data["flight_date_pl"]} w {self.scrapping_data["city"]}:\n' \
-                            f'\n' \
-                            f'{self.scrapping_data["name_start"]}: {self.scrapping_data["time_start"]}\n' \
-                            f'{self.scrapping_data["name_end"]}: {self.scrapping_data["time_end"]}\n' \
-                            f'{self.scrapping_data["flight_duration"]}\n' \
-                            f'Do przelotu pozostało: {h}h {m}m {round(float(s))}s\n' \
-                            f'{self.scrapping_data["brightness"]}\n' \
-                            f'Max wysokość nad horyzontem:{self.scrapping_data["max_altitude"]}'
+
+        self.notification = f'Początek przelotu: {self.flyby_data["flyby_start_time"]}\n' \
+                            f'Koniec przelotu: {self.flyby_data["flyby_end_time"]}\n' \
+                            f'Długość przelotu: {self.flyby_data["flyby_duration"]}\n' \
+                            f'Jasność w najwyższym punkcie: {self.flyby_data["flyby_brightness"]}\n' \
+                            f'Max wysokość nad horyzontem: {self.flyby_data["flyby_max_altitude"]}'
 
         logging.info(self.notification)
 
@@ -51,7 +48,7 @@ class Notification:
         message = EmailMessage()
         message['From'] = getenv("EMAIL")
         message['To'] = subscriber.email
-        message['Subject'] = f'Przelot ISS dnia {self.scrapping_data["flight_date_pl"]} w {self.scrapping_data["city"]}'
+        message['Subject'] = f'Przelot satelity'
         message.set_content(self.notification)
         message.set_charset('utf-8')
 
@@ -60,4 +57,4 @@ class Notification:
         with smtplib.SMTP_SSL(smtp_server, smtp_port, context=context) as server:
             server.login(sender_email, sender_password)
             server.send_message(message)
-            logging.info('Wiadomosc (powiadomienie) wyslano poprawnie.')
+            logging.info('Wiadomość (powiadomienie) została wysłana poprawnie.')
