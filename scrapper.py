@@ -7,12 +7,12 @@ from selenium.webdriver.common.by import By
 logging.basicConfig(level=logging.INFO)
 
 
-def find_flyby(sattelite_id: str, latitude: str, longitude: str):
+def find_flyby(satellite_id: str, latitude: str, longitude: str):
     """
     Scrapes flyby information from a webpage.
 
     Args:
-        sattelite_id (str): the id of sattelite for which the flyby will be checked
+        satellite_id (str): the id of sattelite for which the flyby will be checked
         latitude (str): the latitude for which the satellite flyby will be checked
         longitude (str): the longitude for which the satellite flyby will be checked
 
@@ -24,7 +24,7 @@ def find_flyby(sattelite_id: str, latitude: str, longitude: str):
     options.add_argument('--headless')
     driver = webdriver.Firefox(options=options)
 
-    webpage = f'https://heavens-above.com/PassSummary.aspx?satid={sattelite_id}&lat={latitude}8&lng={longitude}&loc=Unnamed&alt=0&tz=CET'
+    webpage = f'https://heavens-above.com/PassSummary.aspx?satid={satellite_id}&lat={latitude}8&lng={longitude}&loc=Unnamed&alt=0&tz=CET'
     driver.get(webpage)
 
     row = driver.find_element(By.CLASS_NAME, "clickableRow").text
