@@ -7,3 +7,6 @@ class Subscriber:
 
     name: str
     email: str
+    object: str
+    lat: str
+    long: str
