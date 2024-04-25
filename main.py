@@ -2,7 +2,7 @@ from smtplib import SMTPAuthenticationError
 import logging
 from notification import Notification
 from subscriber import Subscriber
-from scrapper import scrap_site
+from scrapper import find_flyby
 
 logging.basicConfig(level=logging.INFO)
 
@@ -11,9 +11,9 @@ if __name__ == '__main__':
         Subscriber('Name_of_subscriber', 'email@ofsubscriber.com'),
     ]
 
-    scrapped_data = scrap_site("Warszawa")
-    if scrapped_data:
-        notification = Notification(scrapped_data=scrapped_data)
+    flyby_data = find_flyby(sattelite_id="25544", latitude="52.2320", longitude="21.0067")
+    if flyby_data:
+        notification = Notification(flyby_data=flyby_data)
         for subscriber in subscribers:
             try:
                 notification.send_mail_to(subscriber)
