@@ -20,15 +20,15 @@ def load_subscribers(file):
 
 if __name__ == '__main__':
     subscribers = load_subscribers("subscribers.json")
-    notification = ""
+    notification = None
 
     for subscriber in subscribers:
         subscriber = Subscriber(
             name=subscriber["name"],
             email=subscriber["email"],
-            satellite_id=subscriber["object"],
-            latitude=subscriber["loc"]["lat"],
-            longitude=subscriber["loc"]["long"]
+            satellite_id=subscriber["satellite_id"],
+            latitude=subscriber["localization"]["latitude"],
+            longitude=subscriber["localization"]["longitude"]
         )
 
         flyby_data = find_flyby(
