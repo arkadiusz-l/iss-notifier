@@ -8,7 +8,7 @@ from scrapper import find_flyby
 logging.basicConfig(level=logging.INFO)
 
 
-def load_subscribers(file):
+def load_subscribers(file: str) -> list:
     try:
         with open(file, encoding="utf-8") as file:
             data = json.load(file)
