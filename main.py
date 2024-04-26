@@ -7,14 +7,19 @@ from scrapper import find_flyby
 
 logging.basicConfig(level=logging.INFO)
 
-if __name__ == '__main__':
+
+def load_subscribers(file):
     try:
-        with open("subscribers.json", encoding="utf-8") as file:
+        with open(file, encoding="utf-8") as file:
             data = json.load(file)
     except FileNotFoundError:
         logging.error("File not found!")
 
-    subscribers = data["subscribers"]
+    return data["subscribers"]
+
+
+if __name__ == '__main__':
+    subscribers = load_subscribers("subscribers.json")
     notification = ""
 
     for subscriber in subscribers:
