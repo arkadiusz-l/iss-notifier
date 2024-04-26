@@ -33,27 +33,27 @@ def find_flyby(satellite_id: str, latitude: str, longitude: str) -> dict:
         driver.quit()
 
         row = row.split(' ')
-        flyby_brightness = row[2]
-        flyby_start_time = row[3]
-        flyby_start_altitude = row[4]
-        flyby_max_time = row[6]
-        flyby_max_altitude = row[7]
-        flyby_end_time = row[9]
-        flyby_end_altitude = row[10]
+        brightness = row[2]
+        start_time = row[3]
+        start_altitude = row[4]
+        highest_point_time = row[6]
+        highest_point_altitude = row[7]
+        end_time = row[9]
+        end_altitude = row[10]
 
-        parsed_flyby_start_time = datetime.strptime(flyby_start_time, "%H:%M:%S")
-        parsed_flyby_end_time = datetime.strptime(flyby_end_time, "%H:%M:%S")
-        flyby_duration = str(parsed_flyby_end_time - parsed_flyby_start_time)
+        parsed_start_time = datetime.strptime(start_time, "%H:%M:%S")
+        parsed_end_time = datetime.strptime(end_time, "%H:%M:%S")
+        duration = str(parsed_end_time - parsed_start_time)
 
         return {
-            "flyby_brightness": flyby_brightness,
-            "flyby_start_time": flyby_start_time,
-            "flyby_start_altitude": flyby_start_altitude,
-            "flyby_max_time": flyby_max_time,
-            "flyby_max_altitude": flyby_max_altitude,
-            "flyby_end_time": flyby_end_time,
-            "flyby_end_altitude": flyby_end_altitude,
-            "flyby_duration": flyby_duration
+            "brightness": brightness,
+            "start_time": start_time,
+            "start_altitude": start_altitude,
+            "highest_point_time": highest_point_time,
+            "highest_point_altitude": highest_point_altitude,
+            "end_time": end_time,
+            "end_altitude": end_altitude,
+            "duration": duration
         }
 
     except WebDriverException:

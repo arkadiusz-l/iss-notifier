@@ -21,22 +21,22 @@ if __name__ == '__main__':
         subscriber = Subscriber(
             name=subscriber["name"],
             email=subscriber["email"],
-            object=subscriber["object"],
-            lat=subscriber["loc"]["lat"],
-            long=subscriber["loc"]["long"]
+            satellite_id=subscriber["object"],
+            latitude=subscriber["loc"]["lat"],
+            longitude=subscriber["loc"]["long"]
         )
 
         flyby_data = find_flyby(
-            satellite_id=subscriber.object,
-            latitude=subscriber.lat,
-            longitude=subscriber.long
+            satellite_id=subscriber.satellite_id,
+            latitude=subscriber.latitude,
+            longitude=subscriber.longitude
         )
 
         if flyby_data:
             notification = Notification(flyby_data=flyby_data)
         try:
             notification.send_mail_to(subscriber)
-        except SMTPAuthenticationError as e:
-            logging.error(e)
-        except SMTPRecipientsRefused as e:
-            logging.error(e)
+        except SMTPAuthenticationError as error:
+            logging.error(error)
+        except SMTPRecipientsRefused as error:
+            logging.error(error)
