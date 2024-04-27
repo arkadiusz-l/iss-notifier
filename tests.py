@@ -1,7 +1,7 @@
 from unittest.mock import patch, MagicMock
 import pytest
 from notification import Notification
-from scrapper import find_flyby
+from scrapper import Scrapper
 
 
 @pytest.fixture
@@ -11,10 +11,12 @@ def mock_driver():
     return driver
 
 
-@patch('scrapper.webdriver')
-def test_find_flyby(mock_webdriver, mock_driver):
-    mock_webdriver.Firefox.return_value = mock_driver
-    flyby_data = find_flyby("25544", "50.5118", "18.0665")
+@patch('driver.Driver')
+def test_find_flyby(mock_driver_class, mock_driver):
+    mock_driver_instance = mock_driver
+    mock_driver_class.return_value = mock_driver_instance
+    scrapper = Scrapper(mock_driver_instance)
+    flyby_data = scrapper.find_flyby("25544", "50.5118", "18.0665")
     assert flyby_data == {
         "brightness": "-2,3",
         "start_time": "03:55:10",
