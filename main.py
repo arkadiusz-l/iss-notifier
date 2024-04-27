@@ -1,7 +1,6 @@
 import json
 import logging
 from smtplib import SMTPAuthenticationError, SMTPRecipientsRefused
-from driver import Driver
 from notification import Notification
 from scrapper import Scrapper
 from subscriber import Subscriber
@@ -21,8 +20,7 @@ def load_subscribers(file: str) -> list:
 
 if __name__ == '__main__':
     subscribers = load_subscribers("subscribers.json")
-    driver = Driver()
-    scrapper = Scrapper(driver=driver.webdriver)
+    scrapper = Scrapper()
     notification = None
 
     for subscriber in subscribers:
@@ -34,19 +32,19 @@ if __name__ == '__main__':
             longitude=subscriber["localization"]["longitude"]
         )
 
-        flyby_data = scrapper.find_flyby(
+        flyby_row = scrapper.find_flyby_row(
             satellite_id=subscriber.satellite_id,
             latitude=subscriber.latitude,
             longitude=subscriber.longitude
         )
 
-        if flyby_data:
-            notification = Notification(flyby_data=flyby_data)
+        flyby_row = scrapper.parse_flyby_row(flyby_row)
+
+        if flyby_row:
+            notification = Notification(flyby_data=flyby_row)
         try:
             notification.send_mail_to(subscriber)
         except SMTPAuthenticationError as error:
             logging.error(error)
         except SMTPRecipientsRefused as error:
             logging.error(error)
-
-    driver.webdriver.quit()
