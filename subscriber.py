@@ -7,3 +7,6 @@ class Subscriber:
 
     name: str
     email: str
+    satellite_id: str
+    latitude: str
+    longitude: str

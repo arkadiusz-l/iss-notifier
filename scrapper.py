@@ -1,55 +1,60 @@
-from datetime import datetime
 import logging
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-
+from datetime import datetime
+import requests
+from bs4 import BeautifulSoup
 
 logging.basicConfig(level=logging.INFO)
 
 
-def find_flyby(satellite_id: str, latitude: str, longitude: str):
-    """
-    Scrapes flyby information from a webpage.
+class Scrapper:
+    def __init__(self):
+        pass
 
-    Args:
-        satellite_id (str): the id of sattelite for which the flyby will be checked
-        latitude (str): the latitude for which the satellite flyby will be checked
-        longitude (str): the longitude for which the satellite flyby will be checked
+    @staticmethod
+    def find_flyby_row(satellite_id: str, latitude: str, longitude: str) -> dict:
+        """
+        Scrapes flyby information from a webpage.
 
-    Returns:
-        dict: flyby information
-    """
+        Args:
+            satellite_id (str): the id of sattelite for which the flyby will be checked
+            latitude (str): the latitude for which the satellite flyby will be checked
+            longitude (str): the longitude for which the satellite flyby will be checked
 
-    options = webdriver.FirefoxOptions()
-    options.add_argument('--headless')
-    driver = webdriver.Firefox(options=options)
+        Returns:
+            dict: flyby information
+        """
+        webpage = f'https://heavens-above.com/PassSummary.aspx?satid={satellite_id}&lat={latitude}8&lng={longitude}&loc=Unnamed&alt=0&tz=CET'
+        response = requests.get(webpage)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        row = soup.find(class_="clickableRow").get_text()
 
-    webpage = f'https://heavens-above.com/PassSummary.aspx?satid={satellite_id}&lat={latitude}8&lng={longitude}&loc=Unnamed&alt=0&tz=CET'
-    driver.get(webpage)
+        logging.debug(f"{row=}")
+        return row
 
-    row = driver.find_element(By.CLASS_NAME, "clickableRow").text
-    driver.quit()
+    @staticmethod
+    def parse_flyby_row(row):
+        brightness = row[6:10]
+        start_time = row[10:18]
+        start_altitude = row[18:21]
+        highest_point_time = row[24:32]
+        highest_point_altitude = row[32:35]
+        end_time = row[37:45]
+        end_altitude = row[45:48]
 
-    row = row.split(' ')
-    flyby_brightness = row[2]
-    flyby_start_time = row[3]
-    flyby_start_altitude = row[4]
-    flyby_max_time = row[6]
-    flyby_max_altitude = row[7]
-    flyby_end_time = row[9]
-    flyby_end_altitude = row[10]
+        parsed_start_time = datetime.strptime(start_time, "%H:%M:%S")
+        parsed_end_time = datetime.strptime(end_time, "%H:%M:%S")
+        duration = str(parsed_end_time - parsed_start_time)
 
-    parsed_flyby_start_time = datetime.strptime(flyby_start_time, "%H:%M:%S")
-    parsed_flyby_end_time = datetime.strptime(flyby_end_time, "%H:%M:%S")
-    flyby_duration = str(parsed_flyby_end_time - parsed_flyby_start_time)
+        flyby_data = {
+            "brightness": brightness,
+            "start_time": start_time,
+            "start_altitude": start_altitude,
+            "highest_point_time": highest_point_time,
+            "highest_point_altitude": highest_point_altitude,
+            "end_time": end_time,
+            "end_altitude": end_altitude,
+            "duration": duration
+        }
 
-    return {
-        "flyby_brightness": flyby_brightness,
-        "flyby_start_time": flyby_start_time,
-        "flyby_start_altitude": flyby_start_altitude,
-        "flyby_max_time": flyby_max_time,
-        "flyby_max_altitude": flyby_max_altitude,
-        "flyby_end_time": flyby_end_time,
-        "flyby_end_altitude": flyby_end_altitude,
-        "flyby_duration": flyby_duration
-    }
+        logging.debug(f"{flyby_data=}")
+        return flyby_data

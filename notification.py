@@ -1,8 +1,8 @@
+import logging
 import smtplib
 import ssl
-import logging
-from os import getenv
 from email.message import EmailMessage
+from os import getenv
 from dotenv import load_dotenv
 from subscriber import Subscriber
 
@@ -10,11 +10,11 @@ from subscriber import Subscriber
 class Notification:
     """Represents an email content, that will be sent to the Subsciber"""
 
-    def __init__(self, flyby_data: dict):
+    def __init__(self, flyby_data: dict) -> None:
         self.flyby_data = flyby_data
-        self.notification = self.create()
+        self.content = self.create()
 
-    def create(self):
+    def create(self) -> str:
         """
         Creates a notification that will be sent by email.
 
@@ -22,23 +22,24 @@ class Notification:
             str: the content of the notification
         """
 
-        self.notification = f'Początek przelotu: {self.flyby_data["flyby_start_time"]}\n' \
-                            f'Koniec przelotu: {self.flyby_data["flyby_end_time"]}\n' \
-                            f'Długość przelotu: {self.flyby_data["flyby_duration"]}\n' \
-                            f'Jasność w najwyższym punkcie: {self.flyby_data["flyby_brightness"]}\n' \
-                            f'Max wysokość nad horyzontem: {self.flyby_data["flyby_max_altitude"]}'
+        self.content = f'Początek widoczności: {self.flyby_data["start_time"]}, wysokość: {self.flyby_data["start_altitude"]}\n' \
+                       f'Koniec widoczności: {self.flyby_data["end_time"]}, wysokość: {self.flyby_data["end_altitude"]}\n' \
+                       f'Długość przelotu: {self.flyby_data["duration"]}\n' \
+                       f'Najwyższy punkt: {self.flyby_data["highest_point_time"]}, wysokość: {self.flyby_data["highest_point_altitude"]}\n' \
+                       f'Jasność w najwyższym punkcie: {self.flyby_data["brightness"]}'
 
-        logging.info(self.notification)
+        logging.info(self.content)
 
-        return self.notification
+        return self.content
 
-    def send_mail_to(self, subscriber: Subscriber):
+    def send_mail_to(self, subscriber: Subscriber) -> None:
         """
         Sends an email with the notification to the subsciber.
 
         Args:
             subscriber (Subscriber): the person who will receive the notification
         """
+
         load_dotenv()
         smtp_port = int(getenv("SMTP_PORT"))
         smtp_server = getenv("SMTP_SERVER")
@@ -49,7 +50,7 @@ class Notification:
         message['From'] = getenv("EMAIL")
         message['To'] = subscriber.email
         message['Subject'] = f'Przelot satelity'
-        message.set_content(self.notification)
+        message.set_content(self.content)
         message.set_charset('utf-8')
 
         context = ssl.create_default_context()
