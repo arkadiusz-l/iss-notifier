@@ -18,7 +18,7 @@ def load_subscribers(file: str) -> list:
     return data["subscribers"]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     subscribers = load_subscribers("subscribers.json")
     scrapper = Scrapper()
     notification = None
