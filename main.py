@@ -1,9 +1,10 @@
 import json
-from smtplib import SMTPAuthenticationError, SMTPRecipientsRefused
 import logging
+from smtplib import SMTPAuthenticationError, SMTPRecipientsRefused
+from driver import Driver
 from notification import Notification
+from scrapper import Scrapper
 from subscriber import Subscriber
-from scrapper import find_flyby
 
 logging.basicConfig(level=logging.INFO)
 
@@ -20,6 +21,8 @@ def load_subscribers(file: str) -> list:
 
 if __name__ == '__main__':
     subscribers = load_subscribers("subscribers.json")
+    driver = Driver()
+    scrapper = Scrapper(driver=driver.webdriver)
     notification = None
 
     for subscriber in subscribers:
@@ -31,7 +34,7 @@ if __name__ == '__main__':
             longitude=subscriber["localization"]["longitude"]
         )
 
-        flyby_data = find_flyby(
+        flyby_data = scrapper.find_flyby(
             satellite_id=subscriber.satellite_id,
             latitude=subscriber.latitude,
             longitude=subscriber.longitude
@@ -45,3 +48,5 @@ if __name__ == '__main__':
             logging.error(error)
         except SMTPRecipientsRefused as error:
             logging.error(error)
+
+    driver.webdriver.quit()

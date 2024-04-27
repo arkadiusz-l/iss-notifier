@@ -1,8 +1,8 @@
+import logging
 import smtplib
 import ssl
-import logging
-from os import getenv
 from email.message import EmailMessage
+from os import getenv
 from dotenv import load_dotenv
 from subscriber import Subscriber
 
