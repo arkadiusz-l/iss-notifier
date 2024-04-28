@@ -28,7 +28,6 @@ class Scrapper:
         row = soup.find(class_="clickableRow").get_text()
 
         logging.debug(f"{row=}")
-        print(type(row))
         return row
 
     @staticmethod
