@@ -20,18 +20,18 @@ def test_parse_flyby_row():
 
 def test_create_notification():
     flyby_data = {
-        'brightness': '-2,3',
-        'start_time': '03:55:10',
-        'start_altitude': '14°',
-        'highest_point_time': '03:57:14',
-        'highest_point_altitude': '26°',
-        'end_time': '04:00:03',
-        'end_altitude': '10°',
-        'duration': '0:04:53'
+        "brightness": "-2,3",
+        "start_time": "03:55:10",
+        "start_altitude": "14°",
+        "highest_point_time": "03:57:14",
+        "highest_point_altitude": "26°",
+        "end_time": "04:00:03",
+        "end_altitude": "10°",
+        "duration": "0:04:53"
     }
     notification = Notification(flyby_data=flyby_data)
-    assert notification.content == f'Początek widoczności: 03:55:10, wysokość: 14°\n' \
-                                   f'Koniec widoczności: 04:00:03, wysokość: 10°\n' \
-                                   f'Długość przelotu: 0:04:53\n' \
-                                   f'Najwyższy punkt: 03:57:14, wysokość: 26°\n' \
-                                   f'Jasność w najwyższym punkcie: -2,3'
+    assert notification.content == f"Początek widoczności: 03:55:10, wysokość: 14°\n" \
+                                   f"Koniec widoczności: 04:00:03, wysokość: 10°\n" \
+                                   f"Długość przelotu: 0:04:53\n" \
+                                   f"Najwyższy punkt: 03:57:14, wysokość: 26°\n" \
+                                   f"Jasność w najwyższym punkcie: -2,3"

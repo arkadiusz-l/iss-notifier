@@ -7,11 +7,9 @@ logging.basicConfig(level=logging.INFO)
 
 
 class Scrapper:
-    def __init__(self):
-        pass
 
     @staticmethod
-    def find_flyby_row(satellite_id: str, latitude: str, longitude: str) -> dict:
+    def find_flyby_row(satellite_id: str, latitude: str, longitude: str) -> str:
         """
         Scrapes flyby information from a webpage.
 
@@ -23,16 +21,27 @@ class Scrapper:
         Returns:
             dict: flyby information
         """
-        webpage = f'https://heavens-above.com/PassSummary.aspx?satid={satellite_id}&lat={latitude}8&lng={longitude}&loc=Unnamed&alt=0&tz=CET'
+
+        webpage = f"https://heavens-above.com/PassSummary.aspx?satid={satellite_id}&lat={latitude}8&lng={longitude}&loc=Unnamed&alt=0&tz=CET"
         response = requests.get(webpage)
-        soup = BeautifulSoup(response.content, 'html.parser')
+        soup = BeautifulSoup(response.content, "html.parser")
         row = soup.find(class_="clickableRow").get_text()
 
         logging.debug(f"{row=}")
         return row
 
     @staticmethod
-    def parse_flyby_row(row):
+    def parse_flyby_row(row: str) -> dict:
+        """
+        Parse a row of flyby data.
+
+        Args:
+            row (str): A string containing the flyby data in a specific format
+
+        Returns:
+            dict: A dictionary containing the parsed flyby data
+        """
+
         brightness = row[6:10]
         start_time = row[10:18]
         start_altitude = row[18:21]

@@ -18,7 +18,7 @@ def load_subscribers(file: str) -> list:
     return data["subscribers"]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     subscribers = load_subscribers("subscribers.json")
     scrapper = Scrapper()
     notification = None
@@ -38,10 +38,10 @@ if __name__ == '__main__':
             longitude=subscriber.longitude
         )
 
-        flyby_row = scrapper.parse_flyby_row(flyby_row)
+        flyby_data = scrapper.parse_flyby_row(flyby_row)
 
-        if flyby_row:
-            notification = Notification(flyby_data=flyby_row)
+        if flyby_data:
+            notification = Notification(flyby_data=flyby_data)
         try:
             notification.send_mail_to(subscriber)
         except SMTPAuthenticationError as error:
