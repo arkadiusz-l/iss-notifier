@@ -3,7 +3,7 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 
 class Scrapper:
@@ -40,15 +40,32 @@ class Scrapper:
 
         Returns:
             dict: A dictionary containing the parsed flyby data
+
+        Note:
+            The removal of all letters from index 6 to the end is necessary because directions sometimes have
+            single-letter designations (e.g. E) and sometimes three-letter designations (e.g. ESE),
+            which changes the length of string and causes issues with slicing.
+            These letters are currently unnecessary.
         """
 
-        brightness = row[6:10]
-        start_time = row[10:18]
-        start_altitude = row[18:21]
-        highest_point_time = row[24:32]
-        highest_point_altitude = row[32:35]
-        end_time = row[37:45]
-        end_altitude = row[45:48]
+        row = row[:6] + "".join([char for char in row[6:] if not char.isalpha()])
+        row = row.split("°")
+
+        logging.debug(f"{row=}")
+
+        brightness_first_sign = row[0][6]
+        if brightness_first_sign == "?":
+            brightness = "nieznana"
+        elif brightness_first_sign.isnumeric():
+            brightness = "+" + row[0][6:9]
+        else:
+            brightness = row[0][6:10]
+        start_time = row[0][-10:-2]
+        start_altitude = row[0][-2:]
+        highest_point_time = row[1][:-2]
+        highest_point_altitude = row[1][-2:]
+        end_time = row[2][:-2]
+        end_altitude = row[2][-2:]
 
         parsed_start_time = datetime.strptime(start_time, "%H:%M:%S")
         parsed_end_time = datetime.strptime(end_time, "%H:%M:%S")

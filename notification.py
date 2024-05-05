@@ -32,7 +32,7 @@ class Notification:
 
         return self.content
 
-    def send_mail_to(self, subscriber: Subscriber) -> None:
+    def send_mail_to(self, subscriber: str) -> None:
         """
         Sends an email with the notification to the subsciber.
 
@@ -48,7 +48,7 @@ class Notification:
 
         message = EmailMessage()
         message["From"] = getenv("EMAIL")
-        message["To"] = subscriber.email
+        message["To"] = subscriber
         message["Subject"] = f"Przelot satelity"
         message.set_content(self.content)
         message.set_charset("utf-8")
